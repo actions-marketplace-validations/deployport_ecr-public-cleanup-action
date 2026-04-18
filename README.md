@@ -1,5 +1,8 @@
 # ECR Public Cleanup
 
+[![Marketplace](https://img.shields.io/github/v/release/deployport/ecr-public-cleanup-action?label=marketplace&logo=github)](https://github.com/marketplace/actions/ecr-public-cleanup)
+[![CI](https://github.com/deployport/ecr-public-cleanup-action/actions/workflows/ci.yml/badge.svg)](https://github.com/deployport/ecr-public-cleanup-action/actions/workflows/ci.yml)
+
 Publish images to ECR Public? AWS doesn't support lifecycle policies there, and
 they're not going to fix that for you. Go vibe-code your own cleanup script that
 works great. We dare you. Ours ate our multi-arch manifests.
