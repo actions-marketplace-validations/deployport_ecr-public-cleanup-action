@@ -1,0 +1,26 @@
+{
+  "images": [
+    {
+      "imageDigest": "sha256:parent0000000000000000000000000000000000000000000000000000000000",
+      "imageTags": ["v1.0.0"]
+    },
+    {
+      "imageDigest": "sha256:amd64childaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "imageTags": []
+    },
+    {
+      "imageDigest": "sha256:arm64childbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "imageTags": []
+    },
+    {
+      "imageDigest": "sha256:orphancccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "imageTags": []
+    }
+  ],
+  "manifests": {
+    "sha256:parent0000000000000000000000000000000000000000000000000000000000": [
+      "sha256:amd64childaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sha256:arm64childbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  }
+}

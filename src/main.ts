@@ -1,27 +1,49 @@
 import * as core from '@actions/core'
-import { wait } from './wait.js'
+import { ECRPUBLICClient } from '@aws-sdk/client-ecr-public'
+import { planCleanup } from './cleanup.js'
+import { deleteImages, getRegistryUri, listAllImages } from './ecr.js'
+import { createManifestFetcher } from './manifest.js'
 
-/**
- * The main function for the action.
- *
- * @returns Resolves when the action is complete.
- */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const repository = core.getInput('repository', { required: true })
+    const dryRun = core.getBooleanInput('dry-run')
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    const client = new ECRPUBLICClient({ region: 'us-east-1' })
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const registryUri = await getRegistryUri(client)
+    const imageUri = `${registryUri}/${repository}`
+    core.info(`Registry: ${registryUri}`)
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    // Fail the workflow run if an error occurs
-    if (error instanceof Error) core.setFailed(error.message)
+    core.info(`Listing images in ${repository}...`)
+    const images = await listAllImages(client, repository)
+    core.info(`Found ${images.length} images`)
+
+    const fetcher = createManifestFetcher(imageUri)
+
+    const { toDelete, toKeep } = await planCleanup(images, fetcher)
+
+    core.info(
+      `Plan: delete ${toDelete.length} untagged/unreferenced, keep ${toKeep.length} untagged-but-referenced`
+    )
+    for (const d of toDelete) core.info(`  delete ${d}`)
+    for (const d of toKeep) core.info(`  keep   ${d} (manifest-list child)`)
+
+    if (dryRun) {
+      core.info('Dry run: skipping batch-delete-image')
+      core.setOutput('deleted-count', 0)
+    } else if (toDelete.length === 0) {
+      core.info('Nothing to delete')
+      core.setOutput('deleted-count', 0)
+    } else {
+      core.info(`Deleting ${toDelete.length} images...`)
+      await deleteImages(client, repository, toDelete)
+      core.setOutput('deleted-count', toDelete.length)
+    }
+
+    core.setOutput('kept-count', toKeep.length)
+    core.setOutput('deleted-digests', toDelete.join('\n'))
+  } catch (err) {
+    core.setFailed(err instanceof Error ? err.message : String(err))
   }
 }

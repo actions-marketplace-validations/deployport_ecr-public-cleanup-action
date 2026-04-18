@@ -1,0 +1,15 @@
+{
+  "images": [
+    {
+      "imageDigest": "sha256:single0000000000000000000000000000000000000000000000000000000000",
+      "imageTags": ["latest"]
+    },
+    {
+      "imageDigest": "sha256:orphancccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "imageTags": []
+    }
+  ],
+  "manifests": {
+    "sha256:single0000000000000000000000000000000000000000000000000000000000": []
+  }
+}

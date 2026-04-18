@@ -1,5 +1,5 @@
 .DS_Store
-.licenses/
+.claude/
 dist/
 node_modules/
 coverage/

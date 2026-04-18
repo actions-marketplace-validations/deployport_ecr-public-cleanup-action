@@ -1,20 +1,26 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
+  "name": "ecr-public-cleanup-action",
+  "description": "GitHub Action to delete orphan untagged images from AWS ECR Public, preserving manifest-list children",
   "version": "0.0.0",
-  "author": "",
+  "author": "deployport",
   "type": "module",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/deployport/ecr-public-cleanup-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/deployport/ecr-public-cleanup-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/deployport/ecr-public-cleanup-action/issues"
   },
   "keywords": [
-    "actions"
+    "actions",
+    "aws",
+    "ecr",
+    "ecr-public",
+    "cleanup",
+    "docker",
+    "oci"
   ],
   "exports": {
     ".": "./dist/index.js"
@@ -25,7 +31,6 @@
   "scripts": {
     "bundle": "npm run format:write && npm run package",
     "ci-test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
-    "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
     "format:write": "npx prettier --write .",
     "format:check": "npx prettier --check .",
     "lint": "npx eslint .",
@@ -33,11 +38,12 @@
     "package": "npx rimraf ./dist && npx rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "package:watch": "npm run package -- --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
-    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
+    "all": "npm run format:write && npm run lint && npm run test && npm run package"
   },
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^3.0.0"
+    "@actions/core": "^3.0.0",
+    "@aws-sdk/client-ecr-public": "^3.1032.0"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
@@ -46,6 +52,7 @@
     "@github/local-action": "^7.0.1",
     "@jest/globals": "^30.2.0",
     "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/jest": "^30.0.0",
@@ -56,7 +63,6 @@
     "eslint-plugin-jest": "^29.15.0",
     "eslint-plugin-prettier": "^5.5.5",
     "jest": "^30.2.0",
-    "make-coverage-badge": "^1.2.0",
     "prettier": "^3.8.1",
     "rollup": "^4.57.1",
     "ts-jest": "^29.4.6",
